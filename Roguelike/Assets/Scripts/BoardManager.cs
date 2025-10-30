@@ -1,9 +1,19 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+
+
+
 public class BoardManager : MonoBehaviour
 {
-    private Tilemap m_tilemap;
+
+    public class CellData
+    {
+        public bool Passable;
+    }
+
+    private CellData[,] m_BoardData;
+    private Tilemap m_Tilemap;
 
     public int width;
     public int height;
@@ -14,24 +24,28 @@ public class BoardManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        m_tilemap = GetComponentInChildren<Tilemap>();
+        m_Tilemap = GetComponentInChildren<Tilemap>();
+        m_BoardData = new CellData[width, height];
 
         for (int y = 0; y < height; ++y)
         {
             for (int x = 0; x < width; ++x)
             {
                 Tile tile;
+                m_BoardData[x, y] = new CellData();
 
                 if (x == 0 || y == 0 || x == width - 1 || y == height - 1)
                 {
                     tile = WallTiles[Random.Range(0, WallTiles.Length)];
+                    m_BoardData[x, y].Passable = false;
                 }
                 else
                 {
                     tile = GroundTiles[Random.Range(0, GroundTiles.Length)];
+                    m_BoardData[x, y].Passable = true;
                 }
 
-                m_tilemap.SetTile(new Vector3Int(x, y, 0), tile);
+                m_Tilemap.SetTile(new Vector3Int(x, y, 0), tile);
             }
         }
 
@@ -43,3 +57,5 @@ public class BoardManager : MonoBehaviour
         
     }
 }
+
+
